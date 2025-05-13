@@ -33,7 +33,7 @@ public:
     panel_rows_ = *rows;
     panel_cols_ = *cols;
 
-    //*rows /= panel_stretch_factor_;
+    *rows /= panel_stretch_factor_;
     *cols *= panel_stretch_factor_;
   }
 
@@ -41,7 +41,7 @@ public:
                               int *visible_width, int *visible_height) const {
     // Matrix width has been altered. Alter it back.
     *visible_width = matrix_width / panel_stretch_factor_;
-    *visible_height = matrix_height; //*visible_height = matrix_height * panel_stretch_factor_;
+    *visible_height = matrix_height * panel_stretch_factor_;
     return true;
   }
 
@@ -493,31 +493,6 @@ public:
   }
 };
 
-/*
-class P4Outdoor80x40 : public MultiplexMapperBase {
-public:
-  P4Outdoor80x40() : MultiplexMapperBase("P4Outdoor80x40", 2) {}
-
-  void MapSinglePanel(int x, int y, int *matrix_x, int *matrix_y) const {
-    int half =  y / (panel_rows_ / 2);  
-    int shift = (y  / (panel_rows_ / 4)) % 2;
-    *matrix_y = ((y / (panel_rows_/2)) * (panel_rows_/4)
-                 + y % (panel_rows_/4));
-    *matrix_x = ((x * 2) + (shift ? 0 : 1));
-  }
-};
-*/
-
-class P4Outdoor80x40 : public MultiplexMapperBase {
-  public:
-    P4Outdoor80x40() : MultiplexMapperBase("P4Outdoor80x40", 2) {}
-  
-    void MapSinglePanel(int x, int y, int *matrix_x, int *matrix_y) const {
-      int shift = ((y / 10) % 2);
-      *matrix_y = y - shift * 10;
-      *matrix_x = ((x * 2) + (shift > 0 ? 0 : 1));
-    }
-  };
 
 /*
  * Here is where the registration happens.
@@ -548,7 +523,6 @@ static MuxMapperList *CreateMultiplexMapperList() {
   result->push_back(new P10Outdoor32x16HalfScanMapper());
   result->push_back(new P10Outdoor32x16QuarterScanMapper());
   result->push_back(new P3Outdoor64x64MultiplexMapper());
-  result->push_back(new P4Outdoor80x40());
   return result;
 }
 
